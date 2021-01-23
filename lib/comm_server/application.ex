@@ -4,13 +4,17 @@ defmodule CommServer.Application do
   @moduledoc false
 
   use Application
+  require Logger
 
   @impl true
   def start(_type, _args) do
+    port = 4001
     children = [
-      # Starts a worker by calling: CommServer.Worker.start_link(arg)
-      # {CommServer.Worker, arg}
+      {Plug.Cowboy, scheme: :http, plug: CommServer.Router, options: [port: port]},
+      {CommServer.Worker, [name: CommServer.Worker]}
     ]
+
+    Logger.info("\n🎧  Listening for connection requests on port #{port}...\n")
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

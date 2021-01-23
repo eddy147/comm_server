@@ -14,7 +14,7 @@ defmodule CommServer.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :cowboy, :plug],
       mod: {CommServer.Application, []}
     ]
   end
@@ -22,8 +22,12 @@ defmodule CommServer.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:ecto, "~> 3.5"},
+      {:cowboy, "~> 2.8"},
+      {:plug, "~> 1.11"},
+      {:plug_cowboy, "~> 2.4"},
+      {:sweet_xml, "~> 0.6.6"},
+      {:zstream, "~> 0.5.2"}
     ]
   end
 end
