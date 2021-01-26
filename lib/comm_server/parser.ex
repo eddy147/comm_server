@@ -3,35 +3,40 @@ defmodule CommServer.Parser do
   alias CommServer.Message
 
   def parse(soap_envelope) do
-    data = soap_envelope
-      |> xpath(~x"//SOAP-ENV:Envelope",
-        type: ~x"./SOAP-ENV:Header/ns2:RouteringHeader/ns4:Berichttype/text()",
-        subtype: ~x"./SOAP-ENV:Header/ns2:RouteringHeader/ns4:Berichtsubtype/text()",
-        version_major: ~x"./SOAP-ENV:Header/ns2:RouteringHeader/ns4:Berichtversie/text()",
-        version_minor: ~x"./SOAP-ENV:Header/ns2:RouteringHeader/ns4:Berichtsubversie/text()",
-        institution: ~x"./SOAP-ENV:Header/ns2:RouteringHeader/ns4:Afzender/ns3:Code/text()",
-        municipality:
-          ~x"./SOAP-ENV:Header/ns2:RouteringHeader/ns4:Geadresseerden/ns3:Relatie/ns3:Code/text()",
-        trace_id: ~x"./SOAP-ENV:Header/ns2:ConversatieHeader/ns4:TraceerId/text()",
-        conversation_id: ~x"./SOAP-ENV:Header/ns2:ConversatieHeader/ns4:ConversatieId/text()",
-        xml_zipped_encoded:
-          ~x"./SOAP-ENV:Body/ns2:IndienenBericht/ns2:Request/ns1:Bericht/ns1:Data/text()"
-      )
+    soap_envelope_stripped = soap_envelope |> strip_namespace()
 
-    IO.inspect(data)
+    xml =
+      soap_envelope_stripped
+      |> xpath(~x"//Data/text()")
+      |> to_string()
+      |> decode()
+      |> unzip()
 
-    %Message{
-      type: data.type,
-      subtype: data.subtype,
-      trace_id: data.trace_id,
-      conversation_id: data.conversation_id,
-      version_major: data.version_major,
-      version_minor: data.version_minor,
-      institution: data.institution,
-      municipality: data.municipality,
-      xml: data.xml_zipped_encoded |> to_string() |> decode() |> unzip(),
+    xml_stripped = strip_namespace(xml)
+
+    message = %Message{
+      type: soap_envelope_stripped |> xpath(~x"//Berichttype/text()"),
+      subtype: soap_envelope_stripped |> xpath(~x"//Berichtsubtype/text()"),
+      trace_id: soap_envelope_stripped |> xpath(~x"//TraceerId/text()"),
+      conversation_id: soap_envelope_stripped |> xpath(~x"//ConversatieId/text()"),
+      version_major: soap_envelope_stripped |> xpath(~x"//Berichtversie/text()"),
+      version_minor: soap_envelope_stripped |> xpath(~x"//Berichtsubversie/text()"),
+      action: soap_envelope_stripped |> xpath(~x"//Actie/text()"),
+      institution: soap_envelope_stripped |> xpath(~x"//Afzender/Relatie/Code/text()"),
+      municipality: soap_envelope_stripped |> xpath(~x"//Geadresseerden/Relatie/Code/text()"),
+      xml: xml_stripped,
+      xml_origin: xml,
       status: %CommServer.Status{}
     }
+
+    message
+  end
+
+  def strip_namespace(xml) do
+    xml2 = Regex.replace(~r/<([a-zA-Z0-9]+):/, xml, "<")
+    xml3 = Regex.replace(~r/<\/([a-zA-Z0-9]+):/, xml2, "</")
+    xml4 = Regex.replace(~r/(\s+>)+/, xml3, "")
+    xml4
   end
 
   defp decode(encoded_string) do
@@ -45,7 +50,9 @@ defmodule CommServer.Parser do
     case :zip.unzip(zipped_xml) do
       {:ok, xml_file} ->
         xml_file |> CommServer.File.read()
-      _ -> raise "Unzipping failed!"
+
+      _ ->
+        raise "Unzipping failed!"
     end
   end
 end

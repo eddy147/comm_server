@@ -7,6 +7,8 @@ defmodule CommServer.Message do
             version_minor: "",
             institution: "",
             municipality: "",
+            action: "",
             xml: "",
+            xml_origin: "",
             status: CommServer.Status
 end
