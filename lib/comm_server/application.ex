@@ -9,6 +9,7 @@ defmodule CommServer.Application do
   @impl true
   def start(_type, _args) do
     port = 4001
+
     children = [
       {Plug.Cowboy, scheme: :http, plug: CommServer.Router, options: [port: port]},
       {CommServer.Worker, [name: CommServer.Worker]}

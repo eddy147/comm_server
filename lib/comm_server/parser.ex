@@ -7,23 +7,22 @@ defmodule CommServer.Parser do
 
     xml =
       soap_envelope_stripped
-      |> xpath(~x"//Data/text()")
-      |> to_string()
+      |> xpath(~x"//Data/text()"s)
       |> decode()
       |> unzip()
 
     xml_stripped = strip_namespace(xml)
 
     message = %Message{
-      type: soap_envelope_stripped |> xpath(~x"//Berichttype/text()"),
-      subtype: soap_envelope_stripped |> xpath(~x"//Berichtsubtype/text()"),
-      trace_id: soap_envelope_stripped |> xpath(~x"//TraceerId/text()"),
-      conversation_id: soap_envelope_stripped |> xpath(~x"//ConversatieId/text()"),
-      version_major: soap_envelope_stripped |> xpath(~x"//Berichtversie/text()"),
-      version_minor: soap_envelope_stripped |> xpath(~x"//Berichtsubversie/text()"),
-      action: soap_envelope_stripped |> xpath(~x"//Actie/text()"),
-      institution: soap_envelope_stripped |> xpath(~x"//Afzender/Relatie/Code/text()"),
-      municipality: soap_envelope_stripped |> xpath(~x"//Geadresseerden/Relatie/Code/text()"),
+      type: soap_envelope_stripped |> xpath(~x"//Berichttype/text()"s),
+      subtype: soap_envelope_stripped |> xpath(~x"//Berichtsubtype/text()"s),
+      trace_id: soap_envelope_stripped |> xpath(~x"//TraceerId/text()"s),
+      conversation_id: soap_envelope_stripped |> xpath(~x"//ConversatieId/text()"s),
+      version_major: soap_envelope_stripped |> xpath(~x"//Berichtversie/text()"s),
+      version_minor: soap_envelope_stripped |> xpath(~x"//Berichtsubversie/text()"s),
+      action: soap_envelope_stripped |> xpath(~x"//Actie/text()"s),
+      institution: soap_envelope_stripped |> xpath(~x"//Afzender/Relatie/Code/text()"s),
+      municipality: soap_envelope_stripped |> xpath(~x"//Geadresseerden/Relatie/Code/text()"s),
       xml: xml_stripped,
       xml_origin: xml,
       status: %CommServer.Status{}

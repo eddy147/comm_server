@@ -1,16 +1,17 @@
 defmodule CommServer.Handler do
   alias CommServer.Parser
+  alias CommServer.ResponseCreator
 
   def loadMessage(soap_envelope) do
     message = Parser.parse(soap_envelope)
     message_loaded = update_status_to_loaded(message)
 
-    IO.inspect(message_loaded)
-    #todo
-      # build the response
-      # save the message
-      # send jw301 for /pull
+    # todo
+    # build the response
+    # save the message
+    # send jw301 for /pull
 
+    ResponseCreator.create_response(message_loaded)
     ~s{<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
     <s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
        <IndienenBerichtResponse xmlns="http://schemas.vecozo.nl/berichtuitwisseling/v3">
@@ -21,7 +22,6 @@ defmodule CommServer.Handler do
        </IndienenBerichtResponse>
     </s:Body>
  </s:Envelope>}
-
   end
 
   defp update_status_to_loaded(message) do
