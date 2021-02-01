@@ -27,7 +27,8 @@ defmodule CommServer.MixProject do
       {:plug, "~> 1.11"},
       {:plug_cowboy, "~> 2.4"},
       {:sweet_xml, "~> 0.6.6"},
-      {:zstream, "~> 0.5.2"}
+      {:zstream, "~> 0.5.2"},
+      {:xml_builder, "~> 2.1"}
     ]
   end
 end

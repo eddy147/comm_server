@@ -1,6 +1,8 @@
 defmodule CommServer.Router do
   use Plug.Router
 
+  import Plug.Conn
+
   alias CommServer.Handler
 
   plug(Plug.Logger)
@@ -10,8 +12,8 @@ defmodule CommServer.Router do
   post "/push" do
     {:ok, body, conn} = read_body(conn)
     response = Handler.loadMessage(body)
-    send_resp(conn, 200, response)
+    send_resp(conn |> put_resp_content_type("text/xml"), 200, response)
   end
 
-  match(_, do: send_resp(conn, 404, "only POST /push allowed."))
+  match(_, do: send_resp(conn |> put_resp_content_type("text/xml"), 404, "<error>404</error>"))
 end
