@@ -34,7 +34,6 @@ defmodule CommServer.MessageHandler do
     message = soap_envelope |> Parser.parse() |> update_status(:stored)
 
     new_queue = [message | queue]
-    {:reply, :ok, new_queue}
+    {:reply, message, new_queue}
   end
-
 end
