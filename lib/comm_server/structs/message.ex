@@ -1,4 +1,4 @@
-defmodule CommServer.Message do
+defmodule CommServer.Structs.Message do
   defstruct type: "",
             subtype: "",
             trace_id: "",

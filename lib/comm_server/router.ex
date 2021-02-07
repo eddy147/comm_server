@@ -3,7 +3,8 @@ defmodule CommServer.Router do
 
   import Plug.Conn
 
-  alias CommServer.Handler
+  alias CommServer.IncomingServer
+  alias CommServer.ResponseCreator
 
   plug(Plug.Logger)
   plug(:match)
@@ -11,7 +12,8 @@ defmodule CommServer.Router do
 
   post "/push" do
     {:ok, body, conn} = read_body(conn)
-    response = Handler.loadMessage(body)
+    IO.inspect IncomingServer.process(body)
+    response = "OK"
     send_resp(conn |> put_resp_content_type("text/xml"), 200, response)
   end
 

@@ -1,6 +1,6 @@
 defmodule CommServer.ResponseCreator do
   import XmlBuilder
-  alias CommServer.Message
+  alias CommServer.Structs.Message
 
   def create_response(%Message{action: "VerzoekToewijzing"} = message) do
     element("s:Envelope", %{"xmlns:s": "http://schemas.xmlsoap.org/soap/envelope/"}, [

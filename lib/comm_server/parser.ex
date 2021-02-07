@@ -1,6 +1,6 @@
 defmodule CommServer.Parser do
   import SweetXml
-  alias CommServer.Message
+  alias CommServer.Structs.Message
 
   def parse(soap_envelope) do
     soap_envelope_stripped = soap_envelope |> strip_namespace()
