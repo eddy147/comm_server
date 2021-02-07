@@ -31,7 +31,7 @@ defmodule CommServer.MessageHandler do
   end
 
   def handle_call({:process, soap_envelope}, _from, queue) do
-    message = soap_envelope |> Parser.parse() |> update_status(:stored)
+    message = soap_envelope |> Parser.parse() |> update_status(:processed)
 
     new_queue = [message | queue]
     {:reply, message, new_queue}

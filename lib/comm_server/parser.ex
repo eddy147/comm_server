@@ -21,8 +21,8 @@ defmodule CommServer.Parser do
       version_major: soap_envelope_stripped |> xpath(~x[//Berichtversie/text()]s),
       version_minor: soap_envelope_stripped |> xpath(~x[//Berichtsubversie/text()]s),
       action: soap_envelope_stripped |> xpath(~x[//Actie/text()]s),
-      institution: soap_envelope_stripped |> xpath(~x[//Afzender/Relatie/Code/text()]s),
-      municipality: soap_envelope_stripped |> xpath(~x[//Geadresseerden/Relatie/Code/text()]s),
+      institution: soap_envelope_stripped |> xpath(~x[//Afzender/Code/text()]s),
+      municipality: soap_envelope_stripped |> xpath(~x[//Relatie/Code/text()]s),
       xml: xml_stripped,
       xml_origin: xml,
       status: %CommServer.Status{}

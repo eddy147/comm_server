@@ -15,8 +15,14 @@ defmodule CommServer.Router do
       {:ok, body, conn} ->
         response = body |> MessageHandler.process() |> ResponseCreator.create()
         send_resp(conn |> put_resp_content_type("text/xml"), 200, response)
+
       {:error, term} ->
-        send_resp(conn |> put_resp_content_type("text/xml"), 400, "<error>#{inspect term}</error>")
+        send_resp(
+          conn |> put_resp_content_type("text/xml"),
+          400,
+          "<error>#{inspect(term)}</error>"
+        )
+
       _ ->
         send_resp(conn |> put_resp_content_type("text/xml"), 400, "<error>Unknown error</error>")
     end
