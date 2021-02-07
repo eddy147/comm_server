@@ -1,4 +1,4 @@
-defmodule CommServer.IncomingServer do
+defmodule CommServer.MessageHandler do
   use GenServer
 
   alias CommServer.Parser
@@ -6,12 +6,12 @@ defmodule CommServer.IncomingServer do
   @name __MODULE__
 
   def start_link(_arg) do
-    IO.puts("Starting the Incoming Handler ...")
+    IO.puts("Starting the Message Handler ...")
     GenServer.start_link(__MODULE__, %{}, name: @name)
   end
 
   def process(message) do
-    GenServer.call(@name, {:store, message})
+    GenServer.call(@name, {:process, message})
   end
 
   # todo fetch messages from DB

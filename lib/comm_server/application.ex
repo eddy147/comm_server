@@ -12,7 +12,7 @@ defmodule CommServer.Application do
 
     children = [
       {Plug.Cowboy, scheme: :http, plug: CommServer.Router, options: [port: port]},
-      {CommServer.Worker, [name: CommServer.Worker]}
+      {CommServer.MessageHandler, [name: CommServer.MessageHandler]}
     ]
 
     Logger.info("\n🎧  Listening for connection requests on port #{port}...\n")
