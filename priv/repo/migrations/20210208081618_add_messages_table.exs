@@ -14,7 +14,7 @@ defmodule CommServer.Messages.Repo.Migrations.AddMessagesTable do
       add :action :string,
       add :xml :string,
       add :xml_origin :string,
-      add :status: CommServer.Status
+      add :status: :string
 
       timestamps
     end
