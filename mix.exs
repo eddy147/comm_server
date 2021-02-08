@@ -22,10 +22,11 @@ defmodule CommServer.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ecto, "~> 3.5"},
+      {:ecto_sql, "~> 3.0"},
       {:cowboy, "~> 2.8"},
       {:plug, "~> 1.11"},
       {:plug_cowboy, "~> 2.4"},
+      {:postgrex, ">= 0.0.0"},
       {:sweet_xml, "~> 0.6.6"},
       {:zstream, "~> 0.5.2"},
       {:xml_builder, "~> 2.1"}
