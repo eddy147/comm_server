@@ -12,6 +12,7 @@ defmodule CommServer.Application do
 
     children = [
       {Plug.Cowboy, scheme: :http, plug: CommServer.Router, options: [port: port]},
+      {CommServer.Messages.Repo, [name: CommServer.Messages.Repo]},
       {CommServer.MessageHandler, [name: CommServer.MessageHandler]}
     ]
 

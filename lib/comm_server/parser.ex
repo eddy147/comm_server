@@ -1,6 +1,6 @@
 defmodule CommServer.Parser do
   import SweetXml
-  alias CommServer.Structs.Message
+  alias CommServer.Messages.Message
 
   def parse(soap_envelope) do
     soap_envelope_stripped = soap_envelope |> strip_namespace()
@@ -14,18 +14,16 @@ defmodule CommServer.Parser do
     xml_stripped = strip_namespace(xml)
 
     message = %Message{
+      id: soap_envelope_stripped |> xpath(~x[//TraceerId/text()]s),
+      conversation_id: soap_envelope_stripped |> xpath(~x[//ConversatieId/text()]s),
+      action: soap_envelope_stripped |> xpath(~x[//Actie/text()]s),
       type: soap_envelope_stripped |> xpath(~x[//Berichttype/text()]s),
       subtype: soap_envelope_stripped |> xpath(~x[//Berichtsubtype/text()]s),
-      trace_id: soap_envelope_stripped |> xpath(~x[//TraceerId/text()]s),
-      conversation_id: soap_envelope_stripped |> xpath(~x[//ConversatieId/text()]s),
-      version_major: soap_envelope_stripped |> xpath(~x[//Berichtversie/text()]s),
-      version_minor: soap_envelope_stripped |> xpath(~x[//Berichtsubversie/text()]s),
-      action: soap_envelope_stripped |> xpath(~x[//Actie/text()]s),
+      version_major: soap_envelope_stripped |> xpath(~x[//Berichtversie/text()]s) |> String.to_integer(),
+      version_minor: soap_envelope_stripped |> xpath(~x[//Berichtsubversie/text()]s) |> String.to_integer(),
       institution: soap_envelope_stripped |> xpath(~x[//Afzender/Code/text()]s),
       municipality: soap_envelope_stripped |> xpath(~x[//Relatie/Code/text()]s),
-      xml: xml_stripped,
-      xml_origin: xml,
-      status: %CommServer.Status{}
+      xml: xml_stripped
     }
 
     message

@@ -2,6 +2,7 @@ defmodule CommServer.MessageHandler do
   use GenServer
 
   alias CommServer.Parser
+  alias CommServer.Messages.Repo
 
   @name __MODULE__
 
@@ -11,7 +12,7 @@ defmodule CommServer.MessageHandler do
   end
 
   def process(message) do
-    GenServer.call(@name, {:process, message})
+    GenServer.call(@name, {:parse, message})
   end
 
   # todo fetch messages from DB
@@ -20,8 +21,11 @@ defmodule CommServer.MessageHandler do
   end
 
   defp update_status(message, status) do
-    loaded_status = Map.put(message.status, status, true)
-    Map.put(message, :status, loaded_status)
+    Map.put(message, :status, Atom.to_string(status))
+  end
+
+  defp upsert_message(changeset) do
+    Repo.insert!(changeset, on_conflict: :nothing)
   end
 
   # Callbacks GenServer
@@ -30,8 +34,13 @@ defmodule CommServer.MessageHandler do
     {:ok, queue}
   end
 
-  def handle_call({:process, soap_envelope}, _from, queue) do
-    message = soap_envelope |> Parser.parse() |> update_status(:processed)
+  def handle_call({:parse, soap_envelope}, _from, queue) do
+    message =
+      soap_envelope
+      |> Parser.parse()
+      |> update_status(:parsed)
+      |> upsert_message()
+      |> update_status(:created)
 
     new_queue = [message | queue]
     {:reply, message, new_queue}

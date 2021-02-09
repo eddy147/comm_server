@@ -1,6 +1,6 @@
 defmodule CommServer.ResponseCreator do
   import XmlBuilder
-  alias CommServer.Structs.Message
+  alias CommServer.Messages.Message
 
   def create(%Message{action: "VerzoekToewijzing"} = message) do
     element("s:Envelope", %{"xmlns:s": "http://schemas.xmlsoap.org/soap/envelope/"}, [
@@ -24,7 +24,7 @@ defmodule CommServer.ResponseCreator do
                 element(
                   :TraceerId,
                   %{xmlns: "http://schemas.vecozo.nl/berichtuitwisseling/messages/v3"},
-                  message.trace_id
+                  message.id
                 )
               ])
             ]
