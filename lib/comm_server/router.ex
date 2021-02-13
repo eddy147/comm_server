@@ -13,7 +13,9 @@ defmodule CommServer.Router do
   post "/push/v3.0" do
     case Plug.Conn.read_body(conn, opts) do
       {:ok, body, conn} ->
-        response = body |> MessageHandler.process() |> ResponseCreator.create()
+        message = MessageHandler.process(body)
+        response = message |> ResponseCreator.create()
+        MessageHandler.create_answer_messages(message)
         send_resp(conn |> put_resp_content_type("text/xml"), 200, response)
 
       {:error, term} ->

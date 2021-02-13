@@ -3,6 +3,8 @@ defmodule CommServer.MessageHandler do
 
   alias CommServer.Parser
   alias CommServer.Messages.Repo
+  alias CommServer.Creator
+  alias CommServer.Messages.Message
 
   @name __MODULE__
 
@@ -11,8 +13,12 @@ defmodule CommServer.MessageHandler do
     GenServer.start_link(__MODULE__, %{}, name: @name)
   end
 
-  def process(message) do
-    GenServer.call(@name, {:parse, message})
+  def process(soap_envelope) do
+    GenServer.call(@name, {:process, soap_envelope})
+  end
+
+  def create_answer_messages(request_message) when request_message.subtype in ["JW315"] do
+    GenServer.cast(@name, {:create_answer_messages, request_message})
   end
 
   # todo fetch messages from DB
@@ -21,28 +27,31 @@ defmodule CommServer.MessageHandler do
   end
 
   defp update_status(message, status) do
-    Map.put(message, :status, Atom.to_string(status))
+    Map.replace!(message, :status, Atom.to_string(status))
   end
 
-  defp upsert_message(changeset) do
-    Repo.insert!(changeset, on_conflict: :nothing)
+  defp upsert_message(%Message{} = changeset) do
+    Creator.upsert_message(changeset)
   end
 
   # Callbacks GenServer
   def init(_state) do
-    queue = fetch_messages()
-    {:ok, queue}
+    {:ok, fetch_messages()}
   end
 
-  def handle_call({:parse, soap_envelope}, _from, queue) do
+  def handle_call({:process, soap_envelope}, _from, state) do
     message =
       soap_envelope
       |> Parser.parse()
-      |> update_status(:parsed)
       |> upsert_message()
-      |> update_status(:created)
+      |> update_status(:processed)
 
-    new_queue = [message | queue]
-    {:reply, message, new_queue}
+    {:reply, message, [state] ++ message}
+  end
+
+  def handle_cast({:create_answer_messages, %Message{subtype: "JW315"} = message}, state) do
+    jw301 = Creator.create(message, :jw301) |> upsert_message()
+    jw316 = Creator.create(message, :jw316) |> upsert_message()
+    {:noreply, [state] ++ [jw301, jw316]}
   end
 end

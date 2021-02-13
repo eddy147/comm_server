@@ -19,8 +19,10 @@ defmodule CommServer.Parser do
       action: soap_envelope_stripped |> xpath(~x[//Actie/text()]s),
       type: soap_envelope_stripped |> xpath(~x[//Berichttype/text()]s),
       subtype: soap_envelope_stripped |> xpath(~x[//Berichtsubtype/text()]s),
-      version_major: soap_envelope_stripped |> xpath(~x[//Berichtversie/text()]s) |> String.to_integer(),
-      version_minor: soap_envelope_stripped |> xpath(~x[//Berichtsubversie/text()]s) |> String.to_integer(),
+      version_major:
+        soap_envelope_stripped |> xpath(~x[//Berichtversie/text()]s) |> String.to_integer(),
+      version_minor:
+        soap_envelope_stripped |> xpath(~x[//Berichtsubversie/text()]s) |> String.to_integer(),
       institution: soap_envelope_stripped |> xpath(~x[//Afzender/Code/text()]s),
       municipality: soap_envelope_stripped |> xpath(~x[//Relatie/Code/text()]s),
       xml: xml_stripped
