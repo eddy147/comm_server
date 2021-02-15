@@ -31,14 +31,18 @@ defmodule CommServer.Parser do
     message
   end
 
-  def strip_namespace(xml) do
+  def getClientInfoByTag(%Message{} = message, tag) do
+    message.xml |> xpath(~x[//Client/#{tag}/text()]s)
+  end
+
+  defp strip_namespace(xml) do
     xml2 = Regex.replace(~r/<([a-zA-Z0-9]+):/, xml, "<")
     xml3 = Regex.replace(~r/<\/([a-zA-Z0-9]+):/, xml2, "</")
     xml4 = strip_whitespace(xml3)
     xml4
   end
 
-  def strip_whitespace(xml) do
+  defp strip_whitespace(xml) do
     Regex.replace(~r/(\s+>)+/, xml, "")
   end
 
