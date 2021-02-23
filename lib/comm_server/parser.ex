@@ -2,6 +2,22 @@ defmodule CommServer.Parser do
   import SweetXml
   alias CommServer.Messages.Message
 
+  @spec parse(binary) :: %CommServer.Messages.Message{
+          __meta__: Ecto.Schema.Metadata.t(),
+          action: any,
+          conversation_id: any,
+          id: any,
+          inserted_at: nil,
+          institution: any,
+          municipality: any,
+          status: nil,
+          subtype: any,
+          type: any,
+          updated_at: nil,
+          version_major: integer,
+          version_minor: integer,
+          xml: binary
+        }
   def parse(soap_envelope) do
     soap_envelope_stripped = soap_envelope |> strip_namespace()
 

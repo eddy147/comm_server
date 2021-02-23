@@ -24,6 +24,7 @@ defmodule CommServer.MixProject do
     [
       {:ecto_sql, "~> 3.0"},
       {:cowboy, "~> 2.8"},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:plug, "~> 1.11"},
       {:plug_cowboy, "~> 2.4"},
       {:postgrex, ">= 0.0.0"},
