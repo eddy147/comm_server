@@ -1,6 +1,6 @@
 defmodule CommServer.MessageHandler do
   alias CommServer.Parser
-  alias CommServer.MessagePersister
+  alias CommServer.MessageCreator
   alias CommServer.Messages.Message
 
   @spec process(binary) :: {:ok, map}
@@ -9,7 +9,7 @@ defmodule CommServer.MessageHandler do
       Task.async(fn ->
         soap_envelope
         |> Parser.parse()
-        |> MessagePersister.upsert_message()
+        |> MessageCreator.upsert_message()
         |> update_status(:received)
         |> create()
       end)
@@ -20,8 +20,8 @@ defmodule CommServer.MessageHandler do
   end
 
   def create(%Message{subtype: "JW315"} = message) do
-    Task.start(fn -> MessagePersister.create(message, :jw316) end)
-    Task.start(fn -> MessagePersister.create(message, :jw301) end)
+    Task.start(fn -> MessageCreator.create(message, :jw316) end)
+    Task.start(fn -> MessageCreator.create(message, :jw301) end)
     message
   end
 

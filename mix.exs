@@ -22,7 +22,7 @@ defmodule CommServer.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ecto_sql, "~> 3.0"},
+      {:ecto_sql, "~> 3.5"},
       {:cowboy, "~> 2.8"},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:plug, "~> 1.11"},

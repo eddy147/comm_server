@@ -5,6 +5,7 @@ defmodule CommServer.Randomiser do
 
   @doc """
   Generate random string based on the given legth. It is also possible to generate certain type of randomise string using the options below:
+  * :uuid - Generates UUID from Ecto.UUID
   * :all - generate alphanumeric random string
   * :alpha - generate nom-numeric random string
   * :numeric - generate numeric random string
@@ -13,7 +14,11 @@ defmodule CommServer.Randomiser do
   ## Example
       iex> Iurban.String.randomizer(20) //"Je5QaLj982f0Meb0ZBSK"
   """
-  def randomizer(length, type \\ :all) do
+  def rand(:uuid) do
+    Ecto.UUID.generate()
+  end
+
+  def rand(length, type \\ :all) do
     alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     numbers = "0123456789"
 
