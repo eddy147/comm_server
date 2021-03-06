@@ -2,7 +2,7 @@ defmodule CommServer.Parser do
   import SweetXml
   alias CommServer.Messages.Message
 
-  @spec parse(binary) :: %CommServer.Messages.Message{
+  @spec parse_soap_envelope(binary) :: %CommServer.Messages.Message{
           __meta__: Ecto.Schema.Metadata.t(),
           action: any,
           conversation_id: any,
@@ -18,7 +18,7 @@ defmodule CommServer.Parser do
           version_minor: integer,
           xml: binary
         }
-  def parse(soap_envelope) do
+  def parse_soap_envelope(soap_envelope) do
     soap_envelope_stripped = soap_envelope |> strip_namespace()
 
     xml =
@@ -26,8 +26,6 @@ defmodule CommServer.Parser do
       |> xpath(~x[//Data/text()]s)
       |> decode()
       |> unzip()
-
-    xml_stripped = strip_namespace(xml)
 
     message = %Message{
       id: soap_envelope_stripped |> xpath(~x[//TraceerId/text()]s),
@@ -41,7 +39,7 @@ defmodule CommServer.Parser do
         soap_envelope_stripped |> xpath(~x[//Berichtsubversie/text()]s) |> String.to_integer(),
       institution: soap_envelope_stripped |> xpath(~x[//Afzender/Code/text()]s),
       municipality: soap_envelope_stripped |> xpath(~x[//Relatie/Code/text()]s),
-      xml: xml_stripped
+      xml: xml
     }
 
     message
@@ -49,6 +47,10 @@ defmodule CommServer.Parser do
 
   def getClientInfoByTag(%Message{} = message, tag) do
     message.xml |> xpath(~x[//Client/#{tag}/text()]s)
+  end
+
+  def fetchProducts(%Message{subtype: "JW315"} = message) do
+    message.xml |> xpath(~x[//AangevraagdProduct])
   end
 
   defp strip_namespace(xml) do

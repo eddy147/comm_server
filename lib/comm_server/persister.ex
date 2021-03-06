@@ -1,4 +1,4 @@
-defmodule CommServer.MessagePersister do
+defmodule CommServer.Persister do
   alias CommServer.Messages.Message
   alias CommServer.Messages.Repo
 

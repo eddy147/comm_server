@@ -5,17 +5,19 @@ defmodule CommServer.Router do
 
   alias CommServer.MessageHandler
   alias CommServer.ResponseCreator
+  alias CommServer.Parser
 
   plug(Plug.Logger)
   plug(:match)
   plug(:dispatch)
 
-  post "/push/v3.0" do
+  post "/api/v3/push" do
     case Plug.Conn.read_body(conn, opts) do
       {:ok, body, conn} ->
-        {:ok, message} = MessageHandler.process(body)
+        message = Parser.parse_soap_envelope(body)
         response = message |> ResponseCreator.create()
         send_resp(conn |> put_resp_content_type("text/xml"), 200, response)
+        MessageHandler.process(message)
 
       {:error, term} ->
         send_resp(

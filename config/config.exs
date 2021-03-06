@@ -6,6 +6,6 @@ config :comm_server, CommServer.Messages.Repo,
   password: "postgres",
   hostname: "localhost"
 
-IO.inspect(Mix.env())
+IO.puts("You are in #{Mix.env()} mode")
 
-import_config("#{Mix.env}.exs")
+import_config("#{Mix.env()}.exs")
