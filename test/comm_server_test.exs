@@ -106,7 +106,6 @@ defmodule CommServerTest do
              ]
            }
 
-
     IO.inspect(xml |> parse())
   end
 end

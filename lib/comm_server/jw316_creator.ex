@@ -1,4 +1,5 @@
 defmodule CommServer.Jw316Creator do
+  alias CommServer.Messages.Message
 
   def create(%Message{subtype: "JW315"} = jw315) do
     id = Ecto.UUID.generate()
