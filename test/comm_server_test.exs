@@ -2,6 +2,7 @@ defmodule CommServerTest do
   use ExUnit.Case
   doctest CommServer
   import SweetXml
+  import XmlBuilder
 
   test "greets the world" do
     IO.inspect(Mix.env())
@@ -74,38 +75,64 @@ defmodule CommServerTest do
       |> xmap(
         products: [
           ~x"//jw315:AangevraagdProduct"l,
-          referenceSupplier: ~x"./jw315:ReferentieAanbieder/text()",
-          category: ~x"./jw315:Product/ijw:Categorie/text()",
-          code: ~x"./jw315:Product/ijw:Code/text()"o,
-          allocatedStartDate: ~x"./jw315:ToewijzingIngangsdatum/text()",
-          size: [
+          "jw301:ReferentieAanbieder": ~x"./jw315:ReferentieAanbieder/text()",
+          "jw301:Product": [
+            ~x"./jw315:Product",
+            "ijw:Categorie": ~x"./ijw:Categorie/text()",
+            "ijw:Code": ~x"./ijw:Code/text()"o
+          ],
+          "jw301:ToewijzingIngangsdatum": ~x"./jw315:ToewijzingIngangsdatum/text()",
+          "jw301:Omvang": [
             ~x"./jw315:Omvang"o,
-            volume: ~x"./ijw:Volume/text()",
-            unity: ~x"./ijw:Eenheid/text()",
-            frequency: ~x"./ijw:Frequentie/text()"
+            "ijw:Volume": ~x"./ijw:Volume/text()"o,
+            "ijw:Eenheid": ~x"./ijw:Eenheid/text()"o,
+            "ijw:Frequentie": ~x"./ijw:Frequentie/text()"o
           ]
         ]
       )
 
-    assert result == %{
-             products: [
-               %{
-                 allocatedStartDate: '2021-01-01',
-                 category: '45',
-                 code: 'YS1U',
-                 referenceSupplier: '88efe721359587',
-                 size: %{frequency: '4', unity: '83', volume: '87'}
-               },
-               %{
-                 allocatedStartDate: '2021-01-01',
-                 category: '54',
-                 code: nil,
-                 referenceSupplier: '99efe721359566',
-                 size: nil
-               }
-             ]
-           }
+    assert result ==  %{
+      products: [
+        %{
+          "jw301:Omvang": %{"ijw:Eenheid": '83', "ijw:Frequentie": '4', "ijw:Volume": '87'},
+          "jw301:Product": %{"ijw:Categorie": '45', "ijw:Code": 'YS1U'},
+          "jw301:ReferentieAanbieder": '88efe721359587',
+          "jw301:ToewijzingIngangsdatum": '2021-01-01'
+        },
+        %{
+          "jw301:Omvang": nil,
+          "jw301:Product": %{"ijw:Categorie": '54', "ijw:Code": nil},
+          "jw301:ReferentieAanbieder": '99efe721359566',
+          "jw301:ToewijzingIngangsdatum": '2021-01-01'
+        }
+      ]
+    }
+  end
 
-    IO.inspect(xml |> parse())
+  test "remove empty elements" do
+    list = %{
+      products: [
+        %{
+          "jw301:Omvang": %{"ijw:Eenheid": '83', "ijw:Frequentie": '4', "ijw:Volume": '87'},
+          "jw301:Product": %{"ijw:Categorie": '45', "ijw:Code": 'YS1U'},
+          "jw301:ReferentieAanbieder": '88efe721359587',
+          "jw301:ToewijzingIngangsdatum": '2021-01-01'
+        },
+        %{
+          "jw301:Omvang": nil,
+          "jw301:Product": %{"ijw:Categorie": '54', "ijw:Code": nil},
+          "jw301:ReferentieAanbieder": '99efe721359566',
+          "jw301:ToewijzingIngangsdatum": '2021-01-01'
+        }
+      ]
+    }
+
+    IO.inspect(list.products)
+
+    Enum.map(list.products, fn p ->
+      if (is_nil(p."jw301:Omvang")) do
+        new_map = Map.delete(poducts, "jw301:Omvang")
+      end
+    end)
   end
 end

@@ -2,11 +2,10 @@ defmodule CommServer.Jw301Creator do
   import XmlBuilder
   import SweetXml
   alias CommServer.Messages.Message
-  alias CommServer.Parser
   alias CommServer.Randomiser
 
   def create(jw315, :jw301) do
-    id = Ecto.UUID.generate()
+    id = Randomiser.rand(:uuid)
 
     %{
       jw315
@@ -99,36 +98,33 @@ defmodule CommServer.Jw301Creator do
   end
 
   defp elementToegewezenProducten(%Message{subtype: "JW315"} = jw315) do
-    element(:"jw301:ToegewezenProducten", addElementsToegewezenProduct(jw315))
+    productsList = element(:"jw301:ToegewezenProducten", fetchProducts(jw315) |> removeEmptyElements |> generate())
   end
 
-  defp addElementsToegewezenProduct(%Message{subtype: "JW315"} = jw315) do
-    products = fetchProducts(jw315)
-    Enum.map(products.products, fn p -> createElementToegewezenProduct(p) end)
-  end
-
-  defp createElementToegewezenProduct(%{} = product) do
-      element(:"jw301:ToegewezenProduct", [
-        element(:"jw301:ToewijzingNummer", Randomiser.rand(10, :numeric))
-      ])
+  defp removeEmptyElements(%{} = products) do
+    products
   end
 
   defp fetchProducts(%Message{subtype: "JW315"} = jw315) do
-    jw315.xml
+    list = jw315.xml
     |> xmap(
       products: [
         ~x"//jw315:AangevraagdProduct"l,
-        referenceSupplier: ~x"./jw315:ReferentieAanbieder/text()",
-        category: ~x"./jw315:Product/ijw:Categorie/text()",
-        code: ~x"./jw315:Product/ijw:Code/text()"o,
-        allocatedStartDate: ~x"./jw315:ToewijzingIngangsdatum/text()",
-        size: [
+        "jw301:ReferentieAanbieder": ~x"./jw315:ReferentieAanbieder/text()",
+        "jw301:Product": [
+          ~x"./jw315:Product",
+          "ijw:Categorie": ~x"./ijw:Categorie/text()",
+          "ijw:Code": ~x"./ijw:Code/text()"o
+        ],
+        "jw301:ToewijzingIngangsdatum": ~x"./jw315:ToewijzingIngangsdatum/text()",
+        "jw301:Omvang": [
           ~x"./jw315:Omvang"o,
-          volume: ~x"./ijw:Volume/text()",
-          unity: ~x"./ijw:Eenheid/text()",
-          frequency: ~x"./ijw:Frequentie/text()"
+          "ijw:Volume": ~x"./ijw:Volume/text()"o,
+          "ijw:Eenheid": ~x"./ijw:Eenheid/text()"o,
+          "ijw:Frequentie": ~x"./ijw:Frequentie/text()"o
         ]
       ]
     )
+    list.products
   end
 end
