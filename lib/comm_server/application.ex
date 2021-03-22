@@ -11,8 +11,7 @@ defmodule CommServer.Application do
     port = 4001
 
     children = [
-      {Plug.Cowboy, scheme: :http, plug: CommServer.Router, options: [port: port]},
-      {CommServer.Messages.Repo, [name: CommServer.Messages.Repo]}
+      {Plug.Cowboy, scheme: :http, plug: CommServer.Router, options: [port: port]}
     ]
 
     Logger.info("\n🎧  Listening for connection requests on port #{port}...\n")

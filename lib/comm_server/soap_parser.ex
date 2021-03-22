@@ -1,24 +1,8 @@
 defmodule CommServer.SoapParser do
   import SweetXml
-  alias CommServer.Messages.Message
+  alias CommServer.Message
 
-  @spec parse(binary) :: %CommServer.Messages.Message{
-          __meta__: Ecto.Schema.Metadata.t(),
-          action: any,
-          conversation_id: any,
-          id: any,
-          inserted_at: nil,
-          institution: any,
-          municipality: any,
-          status: nil,
-          subtype: any,
-          type: any,
-          updated_at: nil,
-          version_major: integer,
-          version_minor: integer,
-          xml: binary
-        }
-  def parse(soap_envelope) do
+    def parse(soap_envelope) do
     soap_envelope_stripped = soap_envelope |> strip_namespace()
 
     xml =
@@ -28,29 +12,18 @@ defmodule CommServer.SoapParser do
       |> unzip()
 
     message = %Message{
-      id: soap_envelope_stripped |> xpath(~x[//TraceerId/text()]s),
-      conversation_id: soap_envelope_stripped |> xpath(~x[//ConversatieId/text()]s),
+      uuid: soap_envelope_stripped |> xpath(~x[//TraceerId/text()]s),
+      conversation_uuid: soap_envelope_stripped |> xpath(~x[//ConversatieId/text()]s),
       action: soap_envelope_stripped |> xpath(~x[//Actie/text()]s),
-      type: soap_envelope_stripped |> xpath(~x[//Berichttype/text()]s),
-      subtype: soap_envelope_stripped |> xpath(~x[//Berichtsubtype/text()]s),
+      type: soap_envelope_stripped |> xpath(~x[//Berichtsubtype/text()]s),
       version_major:
         soap_envelope_stripped |> xpath(~x[//Berichtversie/text()]s) |> String.to_integer(),
       version_minor:
         soap_envelope_stripped |> xpath(~x[//Berichtsubversie/text()]s) |> String.to_integer(),
-      institution: soap_envelope_stripped |> xpath(~x[//Afzender/Code/text()]s),
-      municipality: soap_envelope_stripped |> xpath(~x[//Relatie/Code/text()]s),
       xml: xml
     }
 
     message
-  end
-
-  def getClientInfoByTag(%Message{} = message, tag) do
-    message.xml |> xpath(~x[//Client/#{tag}/text()]s)
-  end
-
-  def fetchProducts(%Message{subtype: "JW315"} = message) do
-    message.xml |> xpath(~x[//AangevraagdProduct])
   end
 
   defp strip_namespace(xml) do

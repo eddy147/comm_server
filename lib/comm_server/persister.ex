@@ -1,8 +1,7 @@
 defmodule CommServer.Persister do
-  alias CommServer.Messages.Message
-  alias CommServer.Messages.Repo
+  alias CommServer.Message
 
-  def upsert_message(%Message{} = message) do
-    Repo.insert!(message, on_conflict: :replace_all, conflict_target: :id)
+  def save(%Message{} = message) do
+    # save to disk
   end
 end
