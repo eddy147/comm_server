@@ -21,7 +21,7 @@ defmodule CommServer.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :cowboy, :plug, :eex, :toml],
+      extra_applications: [:logger, :cowboy, :plug, :eex],
       mod: {CommServer.Application, []}
     ]
   end

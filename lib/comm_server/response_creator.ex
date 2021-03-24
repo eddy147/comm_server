@@ -19,12 +19,12 @@ defmodule CommServer.ResponseCreator do
                 element(
                   :ConversatieId,
                   %{xmlns: "http://schemas.vecozo.nl/berichtuitwisseling/messages/v3"},
-                  message.conversation_id
+                  message.conversation_uuid
                 ),
                 element(
                   :TraceerId,
                   %{xmlns: "http://schemas.vecozo.nl/berichtuitwisseling/messages/v3"},
-                  message.id
+                  message.uuid
                 )
               ])
             ]

@@ -20,6 +20,8 @@ defmodule CommServer.SoapParser do
         soap_envelope_stripped |> xpath(~x[//Berichtversie/text()]s) |> String.to_integer(),
       version_minor:
         soap_envelope_stripped |> xpath(~x[//Berichtsubversie/text()]s) |> String.to_integer(),
+      institution: soap_envelope_stripped |> xpath(~x[//Afzender/Code/text()]s),
+      municipality: soap_envelope_stripped |> xpath(~x[//Relatie/Code/text()]s),
       xml: xml
     }
 
@@ -47,7 +49,7 @@ defmodule CommServer.SoapParser do
   defp unzip(zipped_xml) do
     case :zip.unzip(zipped_xml) do
       {:ok, xml_file} ->
-        xml_file |> CommServer.File.read()
+        xml_file |> File.read!()
 
       _ ->
         raise "Unzipping failed!"

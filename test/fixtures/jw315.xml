@@ -46,6 +46,18 @@
         </jw315:Verwijzer>
         <jw315:Raamcontract>2</jw315:Raamcontract>
       </jw315:AangevraagdProduct>
+      <jw315:AangevraagdProduct>
+        <jw315:ReferentieAanbieder>88efe721359587</jw315:ReferentieAanbieder>
+        <jw315:Product>
+          <ijw:Categorie>52</ijw:Categorie>
+        </jw315:Product>
+        <jw315:ToewijzingIngangsdatum>2021-01-01</jw315:ToewijzingIngangsdatum>
+        <jw315:Verwijzer>
+          <ijw:Type>01</ijw:Type>
+          <ijw:Naam>Utrecht</ijw:Naam>
+        </jw315:Verwijzer>
+        <jw315:Raamcontract>2</jw315:Raamcontract>
+      </jw315:AangevraagdProduct>
     </jw315:AangevraagdeProducten>
   </jw315:Client>
 </jw315:Bericht>

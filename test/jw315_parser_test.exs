@@ -6,14 +6,15 @@ defmodule Jw315ParserTest do
   import SweetXml
 
   alias CommServer.Message
-  alias CommServer.Parsers.Jw315Parser
+  alias CommServer.ParseJw315
+  alias CommServer.NodeFinder
 
   @fixtures_path Path.expand("./fixtures", __DIR__)
 
   test "Get Requested Products" do
     jw315 = %Message{xml: readXml(), type: "JW315"}
-    products = Jw315Parser.to_map(jw315)
-    IO.inspect(products)
+    [msg] = ParseJw315.to_map(jw315)
+    IO.inspect(NodeFinder.find(msg, :aangevraagd_product))
   end
 
   defp readXml() do

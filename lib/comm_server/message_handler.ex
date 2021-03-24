@@ -1,13 +1,9 @@
 defmodule CommServer.MessageHandler do
-  alias CommServer.Jw301Creator
-  alias CommServer.Jw316Creator
   alias CommServer.Message
-  alias CommServer.Persister
 
   def process(%Message{} = message) do
     Task.async(fn ->
       message
-      |> MessagePersister.upsert_message()
       |> create_follow_up_messages()
     end)
   end
