@@ -1,9 +1,8 @@
-defmodule CommServer.CreateJw301 do
+defmodule CommServer.Jw301Creator do
   import XmlBuilder
+
   alias CommServer.Message
   alias CommServer.Randomiser
-  alias CommServer.ParseJw315
-  alias CommServer.NodeFinder
   alias CommServer.Randomiser
 
   @ns_subtype "jw301"
@@ -12,15 +11,21 @@ defmodule CommServer.CreateJw301 do
 
   def create(%Message{type: "JW315"} = msg) do
     id = Randomiser.rand(:uuid)
-    element_main(msg, id) |> generate()
+    xml = element_main(msg, id) |> generate()
+
+    %Message{
+      uuid: id,
+      type: "JW301",
+      xml: xml
+    }
   end
 
   defp element_main(%Message{} = msg, id) do
     element(
       String.to_atom(@ns_subtype <> ":Bericht"),
       %{
-        "xmlns:" <> @ns_subtype => "=http://www.istandaarden.nl/ijw/3_0/basisschema/schema",
-        "xmlns:" <> @ns_subtype => "=http://www.istandaarden.nl/ijw/3_0/jw301/schema"
+        ("xmlns:" <> @ns_subtype) => "=http://www.istandaarden.nl/ijw/3_0/basisschema/schema",
+        ("xmlns:" <> @ns_subtype) => "=http://www.istandaarden.nl/ijw/3_0/jw301/schema"
       },
       [
         element_header(msg, id),
@@ -61,7 +66,8 @@ defmodule CommServer.CreateJw301 do
       element(String.to_atom(@ns_subtype <> ":Bsn"), "Bsn"),
       element(String.to_atom(@ns_subtype <> ":Geboortedatum"), [
         element(String.to_atom(@ns_type <> ":Datum"), "Birthdate"),
-        element(String.to_atom(@ns_subtype <> ":ToegewezenProducten"),
+        element(
+          String.to_atom(@ns_subtype <> ":ToegewezenProducten"),
           element(element_products(msg))
         )
       ])
@@ -69,22 +75,38 @@ defmodule CommServer.CreateJw301 do
   end
 
   defp element_products(%Message{} = msg) do
-    [data] = ParseJw315.to_map(msg.xml)
-    products = data |> NodeFinder.find(:AangevraagdProduct)
-    add_element_product(products, [])
+    [data] = Quinn.parse(msg.xml)
+    products = data |> Quinn.find(:AangevraagdProduct)
+
+    element_products = add_element_products(products, [])
+    IO.inspect(element_products)
   end
 
-  defp add_element_product(products, elements) do
-    Enum.reduce(products, [], fn (p, _acc) ->
-      elements ++ element(String.to_atom(@ns_subtype <> ":ToegewezenProduct"), [
-        element(String.to_atom(@ns_subtype <> ":ToewijzingNummer", Randomiser.rand(6, :numeric))),
-        element(String.to_atom(@ns_subtype <> ":ReferentieAanbieder", Randomiser.rand(16, :all))),
-        add_element_product_info(p)
-      ])
-    end)
-  end
+  def add_element_products([], elements), do: elements
 
-  defp add_element_product_info(product) do
-    if (product)
+  def add_element_products([_p | tail], elements) do
+    add_element_products(
+      tail,
+      elements ++
+        element(String.to_atom(@ns_subtype <> ":ToegewezenProduct"), [
+          element(
+            String.to_atom(@ns_subtype <> ":ToewijzingNummer"),
+            Randomiser.rand(6, :numeric)
+          ),
+          element(
+            String.to_atom(@ns_subtype <> ":ReferentieAanbieder"),
+            Randomiser.rand(16, :all)
+          ),
+          element(
+            String.to_atom(@ns_subtype <> ":Product"),
+            [
+              element(
+                String.to_atom(@ns_type <> ":Categorie"),
+                "45"
+              )
+            ]
+          )
+        ])
+    )
   end
 end
