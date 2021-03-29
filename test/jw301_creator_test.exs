@@ -1,4 +1,4 @@
-defmodule CreateJw301Test do
+defmodule Jw301CreatorTest do
   use ExUnit.Case
 
   doctest CommServer

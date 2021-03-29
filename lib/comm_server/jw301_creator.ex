@@ -23,8 +23,15 @@ defmodule CommServer.Jw301Creator do
     client = %{date_of_birth: "2010-01-01", bsn: "1234567892"}
     message = %{id: "1662711"}
     date = %{today: "2021-03-30"}
+
     @templates_path
     |> Path.join("jw301.xml.eex")
-    |> EEx.eval_file(sender: sender, receiver: receiver, client: client, message: message, date: date)
+    |> EEx.eval_file(
+      sender: sender,
+      receiver: receiver,
+      client: client,
+      message: message,
+      date: date
+    )
   end
 end
