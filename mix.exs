@@ -33,6 +33,7 @@ defmodule CommServer.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ecto_sql, "~> 3.0"},
       {:elixir_xml_to_map, "~> 2.0"},
+      {:iteraptor, "~> 1.13"},
       {:plug, "~> 1.11"},
       {:plug_cowboy, "~> 2.4"},
       {:postgrex, ">= 0.0.0"},
