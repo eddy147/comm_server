@@ -32,7 +32,6 @@ defmodule CommServer.Parser do
   def get_value_in_product(p, _search, _result) when is_binary(p), do: p
   def get_value_in_product(p, search, result) when is_map(p), do: get_value_in_product(p.value, search, result)
   def get_value_in_product([head | tail], search, result) do
-    IO.inspect(head)
     if is_map(head.value) do
       get_value_in_product([head.value], search, result)
     else
