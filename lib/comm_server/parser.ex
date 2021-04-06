@@ -28,17 +28,32 @@ defmodule CommServer.Parser do
 
   def get_value_in_product(p, search), do: get_value_in_product(p.value, search, "")
 
-  def get_value_in_product(p, _search, result) when [] == p, do: result
+  def get_value_in_product(p, _search, result) when [] == p do
+    IO.puts("Just return #{result}...we are done.")
+    result
+  end
+
   def get_value_in_product(p, _search, _result) when is_binary(p), do: p
-  def get_value_in_product(p, search, result) when is_map(p), do: get_value_in_product(p.value, search, result)
+
+  def get_value_in_product(p, search, result) when is_map(p),
+    do: get_value_in_product(p.value, search, result)
+
   def get_value_in_product([head | tail], search, result) do
     if is_map(head.value) do
+      IO.puts("is map")
       get_value_in_product([head.value], search, result)
     else
       if head.name == search do
+        IO.puts("Found")
         get_value_in_product([], search, result <> List.first(head.value))
       else
-        get_value_in_product(tail, search, result)
+        if search == :categorie and head.name == :product do
+          IO.puts("search = categorie and name = product")
+          get_value_in_product(head.value, search, result)
+        else
+          IO.puts("Search the tail")
+          get_value_in_product(tail, search, result)
+        end
       end
     end
   end

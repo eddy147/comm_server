@@ -18,7 +18,12 @@ defmodule ParserTest do
   end
 
   test "Get Referentie Aanbieder" do
-    assert "88efe721359587" = Parser.get_value_in_product(get_product(read_xml()), :referentie_aanbieder)
+    assert "88efe721359587" =
+             Parser.get_value_in_product(get_product(read_xml()), :referentie_aanbieder)
+  end
+
+  test "Get Category" do
+    assert "45" = Parser.get_value_in_product(get_product(read_xml()), :categorie)
   end
 
   defp get_product(xml) do
