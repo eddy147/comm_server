@@ -24,39 +24,23 @@ defmodule CommServer.Parser do
     |> Quinn.find(:aangevraagd_product)
   end
 
-  # def find_value(_p, _search), do: "88efe721359587"
+  # def get_value(_p, _search), do: "88efe721359587"
 
-  def find_value(p, search), do: _find_value(p.value, search, "")
+  def get_value_in_product(p, search), do: get_value_in_product(p.value, search, "")
 
-  def _find_value(p, _search, result) when [] == p, do: result
-  def _find_value(p, _search, _result) when is_binary(p), do: p
-  def _find_value(p, search, result) when is_map(p), do: _find_value(p.value, search, result)
-  def _find_value([head | tail], search, result) do
+  def get_value_in_product(p, _search, result) when [] == p, do: result
+  def get_value_in_product(p, _search, _result) when is_binary(p), do: p
+  def get_value_in_product(p, search, result) when is_map(p), do: get_value_in_product(p.value, search, result)
+  def get_value_in_product([head | tail], search, result) do
     IO.inspect(head)
     if is_map(head.value) do
-      _find_value([head.value], search, result)
+      get_value_in_product([head.value], search, result)
     else
       if head.name == search do
-        _find_value([], search, result <> List.first(head.value))
+        get_value_in_product([], search, result <> List.first(head.value))
       else
-        _find_value(tail, search, result)
+        get_value_in_product(tail, search, result)
       end
     end
   end
-  def _find_value(p, _search, _result) do
-    IO.puts("What AM I?")
-    IO.inspect(p)
-  end
-
-  # def _find_value([head | tail], search, result) do
-  #   if (is_map(head.value)) do
-  #     _find_value([head.value], search, result)
-  #   else
-  #     if (head.name == search) do
-  #       _find_value([], search, result <> head.value)
-  #     else
-  #       _find_value(tail, search, result)
-  #     end
-  #   end
-  # end
 end
