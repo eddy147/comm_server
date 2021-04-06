@@ -17,8 +17,14 @@ defmodule ParserTest do
     assert "999900006" == Parser.get_value(%Message{type: "JW315", xml: read_xml()}, "jw315:Bsn")
   end
 
-  test "Get Details from product 1" do
-    Parser.flatten_products(%Message{type: "JW315", xml: read_xml()})
+  test "Get Referentie Aanbieder" do
+    assert "88efe721359587" = Parser.find_value(get_product(read_xml()), :referentie_aanbieder)
+  end
+
+  defp get_product(xml) do
+    %Message{type: "JW315", xml: xml}
+    |> Parser.get_products()
+    |> List.first()
   end
 
   defp read_xml() do

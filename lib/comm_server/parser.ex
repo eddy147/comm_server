@@ -18,26 +18,45 @@ defmodule CommServer.Parser do
   #   |> get_value_from_list()
   # end
 
-  def get_list(%Message{type: "JW315", xml: xml}, key) do
+  def get_products(%Message{type: "JW315", xml: xml}) do
     xml
     |> Quinn.XmlParser.parse(%{strip_namespaces: true})
-    |> Quinn.find(String.to_atom(key))
-     |> List.first()
-  end
-
-  def flatten_products(%Message{type: "JW315"} = jw315) do
-    jw315.xml
-    |> Quinn.XmlParser.parse(%{strip_namespaces: true})
     |> Quinn.find(:aangevraagd_product)
-    |> Enum.each(fn p -> flatten_product(p, %{}) end)
   end
 
-  def flatten_product(%{} = p, %{} = _result) do
+  # def find_value(_p, _search), do: "88efe721359587"
+
+  def find_value(p, search), do: _find_value(p.value, search, "")
+
+  def _find_value(p, _search, result) when [] == p, do: result
+  def _find_value(p, _search, _result) when is_binary(p), do: p
+  def _find_value(p, search, result) when is_map(p), do: _find_value(p.value, search, result)
+  def _find_value([head | tail], search, result) do
+    IO.inspect(head)
+    if is_map(head.value) do
+      _find_value([head.value], search, result)
+    else
+      if head.name == search do
+        _find_value([], search, result <> List.first(head.value))
+      else
+        _find_value(tail, search, result)
+      end
+    end
+  end
+  def _find_value(p, _search, _result) do
+    IO.puts("What AM I?")
     IO.inspect(p)
   end
 
-  def flatten_value(%{attr: attr, name: name, value: value}) do
-    
-  end
-
+  # def _find_value([head | tail], search, result) do
+  #   if (is_map(head.value)) do
+  #     _find_value([head.value], search, result)
+  #   else
+  #     if (head.name == search) do
+  #       _find_value([], search, result <> head.value)
+  #     else
+  #       _find_value(tail, search, result)
+  #     end
+  #   end
+  # end
 end

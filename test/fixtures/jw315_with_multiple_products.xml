@@ -46,6 +46,18 @@
         </jw315:Verwijzer>
         <jw315:Raamcontract>2</jw315:Raamcontract>
       </jw315:AangevraagdProduct>
+      <jw315:AangevraagdProduct>
+        <jw315:ReferentieAanbieder>AEgxPD6HGyfEV6</jw315:ReferentieAanbieder>
+        <jw315:Product>
+          <ijw:Categorie>52</ijw:Categorie>
+        </jw315:Product>
+        <jw315:ToewijzingIngangsdatum>2021-01-02</jw315:ToewijzingIngangsdatum>
+        <jw315:Verwijzer>
+          <ijw:Type>02</ijw:Type>
+          <ijw:Naam>Woerden</ijw:Naam>
+        </jw315:Verwijzer>
+        <jw315:Raamcontract>1</jw315:Raamcontract>
+      </jw315:AangevraagdProduct>
     </jw315:AangevraagdeProducten>
   </jw315:Client>
 </jw315:Bericht>
