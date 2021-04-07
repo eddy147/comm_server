@@ -26,6 +26,10 @@ defmodule ParserTest do
     assert "45" = Parser.get_value_in_product(get_product(read_xml()), :categorie)
   end
 
+  test "Get Product Code" do
+    assert "YS1U" = Parser.get_value_in_product(get_product(read_xml()), :code)
+  end
+
   defp get_product(xml) do
     %Message{type: "JW315", xml: xml}
     |> Parser.get_products()
