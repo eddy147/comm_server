@@ -10,6 +10,7 @@ defmodule Jw301CreatorTest do
 
   test "Create Xml" do
     jw301 == Jw301Creator.create(%Message{xml: readXml(), type: "JW315"})
+    #todo: implement asserts
   end
 
   defp readXml() do
