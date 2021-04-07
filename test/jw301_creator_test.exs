@@ -9,7 +9,7 @@ defmodule Jw301CreatorTest do
   @fixtures_path Path.expand("./fixtures", __DIR__)
 
   test "Create Xml" do
-    jw301 = Jw301Creator.create(%Message{xml: readXml(), type: "JW315"})
+    jw301 == Jw301Creator.create(%Message{xml: readXml(), type: "JW315"})
   end
 
   defp readXml() do

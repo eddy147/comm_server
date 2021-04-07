@@ -24,8 +24,6 @@ defmodule CommServer.Parser do
     |> Quinn.find(:aangevraagd_product)
   end
 
-  # def get_value(_p, _search), do: "88efe721359587"
-
   def get_value_in_product(p, search), do: get_value_in_product(p.value, search, "")
 
   defp get_value_in_product([], _search, result), do: result

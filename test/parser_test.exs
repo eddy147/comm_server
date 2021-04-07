@@ -9,7 +9,7 @@ defmodule ParserTest do
   @fixtures_path Path.expand("./fixtures", __DIR__)
 
   test "Get Sender from Jw315" do
-    assert "22227338" =
+    assert "22227338" ==
              Parser.get_value(%Message{type: "JW315", xml: read_xml()}, "jw315:Afzender")
   end
 
@@ -18,16 +18,16 @@ defmodule ParserTest do
   end
 
   test "Get Referentie Aanbieder" do
-    assert "88efe721359587" =
+    assert "88efe721359587" ==
              Parser.get_value_in_product(get_product(read_xml()), :referentie_aanbieder)
   end
 
   test "Get Category" do
-    assert "45" = Parser.get_value_in_product(get_product(read_xml()), :categorie)
+    assert "45" == Parser.get_value_in_product(get_product(read_xml()), :categorie)
   end
 
   test "Get Product Code" do
-    assert "YS1U" = Parser.get_value_in_product(get_product(read_xml()), :code)
+    assert "YS1U" == Parser.get_value_in_product(get_product(read_xml()), :code)
   end
 
   defp get_product(xml) do
