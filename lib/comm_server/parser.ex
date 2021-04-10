@@ -1,19 +1,19 @@
 defmodule CommServer.Parser do
   alias CommServer.Message
 
-  def get_value(%Message{xml: xml}, key) do
+  def find(%Message{xml: xml}, keys) do
     xml
     |> Quinn.XmlParser.parse(%{strip_namespaces: true})
-    |> get_value_from_parsed_data(key)
+    |> find(keys)
   end
 
-  def get_value_from_parsed_data(data, key) do
-    data |> Quinn.find(key) |> get_value_from_node()
+  def find(data, keys) do
+    data |> Quinn.find(keys) |> find()
   end
 
-  def get_value_from_node([]), do: ""
+  def find([]), do: ""
 
-  def get_value_from_node([head | _tail]) do
+  def find([head | _tail]) do
     head
     |> Map.fetch!(:value)
     |> List.first()
@@ -37,20 +37,20 @@ defmodule CommServer.Parser do
       result ++
         [
           %{
-            referentie_aanbieder: get_value_from_parsed_data(head, :referentie_aanbieder),
-            categorie: get_value_from_parsed_data(head, :categorie),
-            code: get_value_from_parsed_data(head, :code),
-            toewijzing_ingangsdatum: get_value_from_parsed_data(head, :toewijzing_ingangsdatum),
+            referentie_aanbieder: find(head, :referentie_aanbieder),
+            categorie: find(head, :categorie),
+            code: find(head, :code),
+            toewijzing_ingangsdatum: find(head, :toewijzing_ingangsdatum),
             omvang: %{
-              volume: get_value_from_parsed_data(head, :volume),
-              eenheid: get_value_from_parsed_data(head, :eenheid),
-              frequentie: get_value_from_parsed_data(head, :frequentie)
+              volume: find(head, :volume),
+              eenheid: find(head, :eenheid),
+              frequentie: find(head, :frequentie)
             },
             verwijzer: %{
-              type: get_value_from_parsed_data(head, :aantal),
-              naam: get_value_from_parsed_data(head, :naam)
+              type: find(head, :type),
+              naam: find(head, :naam)
             },
-            raamcontract: get_value_from_parsed_data(head, :raamcontract)
+            raamcontract: find(head, :raamcontract)
           }
         ]
     )

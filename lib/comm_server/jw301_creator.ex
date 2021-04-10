@@ -21,22 +21,20 @@ defmodule CommServer.Jw301Creator do
     products = Parser.products_flat_map(msg)
 
     jw301 = %{
-      afzender: Parser.get_value(msg, :ontvanger),
+      afzender: Parser.find(msg, :ontvanger),
       dagtekening: Date.utc_today() |> Date.to_string(),
       identificatie: Randomiser.rand(14, :all),
-      ontvanger: Parser.get_value(msg, :afzender),
+      ontvanger: Parser.find(msg, :afzender),
       client: %{
-        bsn: Parser.get_value(msg, :bsn),
-        geboortedatum: Parser.get_value(msg, :datum),
-        achternaam: Parser.get_value(msg, :achternaam),
-        voorvoegsel: Parser.get_value(msg, :voorvoegsel),
-        voorletters: Parser.get_value(msg, :voorletters),
-        voornamen: Parser.get_value(msg, :voornamen),
+        bsn: Parser.find(msg, :bsn),
+        geboortedatum: Parser.find(msg, :datum),
+        achternaam: Parser.find(msg, :achternaam),
+        voorvoegsel: Parser.find(msg, :voorvoegsel),
+        voorletters: Parser.find(msg, :voorletters),
+        voornamen: Parser.find(msg, :voornamen),
         products: products
       }
     }
-
-    IO.inspect(jw301)
 
     @templates_path
     |> Path.join("jw301.xml.eex")
