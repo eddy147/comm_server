@@ -1,22 +1,23 @@
 defmodule CommServer.Parser do
   alias CommServer.Message
 
-  def get_value(%Message{type: "JW315", xml: xml}, key) do
+  def get_value(%Message{xml: xml}, key) do
     xml
-    |> Quinn.XmlParser.parse()
-    |> Quinn.find(String.to_atom(key))
-    |> List.first()
+    |> Quinn.XmlParser.parse(%{strip_namespaces: true})
+    |> get_value_from_parsed_data(key)
+  end
+
+  def get_value_from_parsed_data(data, key) do
+    data |> Quinn.find(key) |> get_value_from_node()
+  end
+
+  def get_value_from_node([]), do: ""
+
+  def get_value_from_node([head | _tail]) do
+    head
     |> Map.fetch!(:value)
     |> List.first()
   end
-
-  # def get_value_from_node(node, key) do
-  #   IO.inspect(
-  #     node
-  #     |> Quinn.find(String.to_atom(key))
-  #   )
-  #   |> get_value_from_list()
-  # end
 
   def get_products(%Message{type: "JW315", xml: xml}) do
     xml
@@ -24,19 +25,34 @@ defmodule CommServer.Parser do
     |> Quinn.find(:aangevraagd_product)
   end
 
-  def get_value_in_product(p, search), do: get_value_in_product(p.value, search, "")
+  def products_flat_map(%Message{type: "JW315"} = msg) do
+    products_flat_map(get_products(msg), [])
+  end
 
-  defp get_value_in_product([], _search, result), do: result
+  defp products_flat_map([], result), do: result
 
-  defp get_value_in_product([head | tail], search, result) do
-    if is_map(List.first(head.value)) do
-      get_value_in_product(head.value, search, result)
-    else
-      if head.name == search do
-        get_value_in_product([], search, result <> List.first(head.value))
-      else
-        get_value_in_product(tail, search, result)
-      end
-    end
+  defp products_flat_map([head | tail], result) do
+    products_flat_map(
+      tail,
+      result ++
+        [
+          %{
+            referentie_aanbieder: get_value_from_parsed_data(head, :referentie_aanbieder),
+            categorie: get_value_from_parsed_data(head, :categorie),
+            code: get_value_from_parsed_data(head, :code),
+            toewijzing_ingangsdatum: get_value_from_parsed_data(head, :toewijzing_ingangsdatum),
+            omvang: %{
+              volume: get_value_from_parsed_data(head, :volume),
+              eenheid: get_value_from_parsed_data(head, :eenheid),
+              frequentie: get_value_from_parsed_data(head, :frequentie)
+            },
+            verwijzer: %{
+              type: get_value_from_parsed_data(head, :aantal),
+              naam: get_value_from_parsed_data(head, :naam)
+            },
+            raamcontract: get_value_from_parsed_data(head, :raamcontract)
+          }
+        ]
+    )
   end
 end
