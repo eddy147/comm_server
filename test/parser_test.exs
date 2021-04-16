@@ -39,7 +39,7 @@ defmodule ParserTest do
       %Message{type: "JW315", xml: read_xml()}
       |> Parser.products_flat_map()
 
-    assert flat_mapped_products == [
+    assert flat_mapped_products = [
              %{
                categorie: "45",
                code: "YS1U",
@@ -47,7 +47,8 @@ defmodule ParserTest do
                raamcontract: "2",
                referentie_aanbieder: "88efe721359587",
                toewijzing_ingangsdatum: "2021-01-01",
-               verwijzer: %{naam: "Utrecht", type: "01"}
+               verwijzer: %{naam: "Utrecht", type: "01"},
+               toewijzing_nummer: "0000000",
              }
            ]
   end

@@ -31,12 +31,15 @@ defmodule CommServer.Parser do
 
   defp products_flat_map([], result), do: result
 
+  defp randomiser(), do: Application.get_env(:comm_server, :randomiser)
+
   defp products_flat_map([head | tail], result) do
     products_flat_map(
       tail,
       result ++
         [
           %{
+            toewijzing_nummer: randomiser().rand(7,:numeric),
             referentie_aanbieder: find(head, :referentie_aanbieder),
             categorie: find(head, :categorie),
             code: find(head, :code),

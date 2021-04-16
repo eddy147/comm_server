@@ -32,8 +32,9 @@
             <ijw:Voorletters><%= jw301.client.voorletters %></ijw:Voorletters>
         </jw301:Naam>
         <jw301:ToegewezenProducten>
+            <% for product <- jw301.client.products do %>
             <jw301:ToegewezenProduct>
-                <jw301:ToewijzingNummer>300201</jw301:ToewijzingNummer>
+                <jw301:ToewijzingNummer><%= product.toewijzing_nummer %></jw301:ToewijzingNummer>
                 <jw301:ReferentieAanbieder>40A12341234</jw301:ReferentieAanbieder>
                 <jw301:Product>
                     <ijw:Categorie>45</ijw:Categorie>
@@ -50,23 +51,7 @@
                 </jw301:Omvang>
                 <jw301:Commentaar>Commentaar Toegewezen Product 1</jw301:Commentaar>
             </jw301:ToegewezenProduct>
-            <jw301:ToegewezenProduct>
-                <jw301:ToewijzingNummer>300202</jw301:ToewijzingNummer>
-                <jw301:ReferentieAanbieder>40A12341235</jw301:ReferentieAanbieder>
-                <jw301:Product>
-                    <ijw:Categorie>45</ijw:Categorie>
-                    <ijw:Code>YS2U</ijw:Code>
-                </jw301:Product>
-                <jw301:Toewijzingsdatum>2021-03-01</jw301:Toewijzingsdatum>
-                <jw301:Toewijzingstijd>12:34:56</jw301:Toewijzingstijd>
-                <jw301:Ingangsdatum>2021-04-01</jw301:Ingangsdatum>
-                <jw301:Einddatum>2021-07-19</jw301:Einddatum>
-                <jw301:Omvang>
-                    <ijw:Volume>2</ijw:Volume>
-                    <ijw:Eenheid>16</ijw:Eenheid>
-                    <ijw:Frequentie>2</ijw:Frequentie>
-                </jw301:Omvang>
-                <jw301:Commentaar>Commentaar Toegewezen Product 2</jw301:Commentaar>
+            <% end %>
             </jw301:ToegewezenProduct>
         </jw301:ToegewezenProducten>
     </jw301:Client>

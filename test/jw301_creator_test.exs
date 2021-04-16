@@ -10,7 +10,8 @@ defmodule Jw301CreatorTest do
   @fixtures_path Path.expand("./fixtures", __DIR__)
 
   test "Create Xml" do
-    jw301 = Jw301Creator.create(%Message{xml: readXml(), type: "JW315"})
+    jw315 = %Message{xml: readXml(), type: "JW315"}
+    jw301 = Jw301Creator.create(jw315)
 
     assert %Message{uuid: uuid, type: "JW301", xml: xml} = jw301
     assert is_binary(jw301.xml)

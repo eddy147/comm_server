@@ -1,19 +1,7 @@
-defmodule CommServer.Randomiser do
-  @moduledoc """
-  Random string generator module.
-  """
+defmodule CommServer.RandomiserMock do
 
-  @doc """
-  Generate random string based on the given legth. It is also possible to generate certain type of randomise string using the options below:
-  * :uuid - Generates UUID from Ecto.UUID
-  * :all - generate alphanumeric random string
-  * :alpha - generate nom-numeric random string
-  * :numeric - generate numeric random string
-  * :upcase - generate upper case non-numeric random string
-  * :downcase - generate lower case non-numeric random string
-  ## Example
-      iex> Iurban.String.randomizer(20) //"Je5QaLj982f0Meb0ZBSK"
-  """
+  alias CommServer.Randomiser
+  @behaviour Randomiser
   def rand(:uuid) do
     Ecto.UUID.generate()
   end
