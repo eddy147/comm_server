@@ -1,0 +1,10 @@
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+    <s:Body xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <IndienenBerichtResponse xmlns="http://schemas.vecozo.nl/berichtuitwisseling/v3">
+            <IndienenBerichtResult>
+                <ConversatieId xmlns="http://schemas.vecozo.nl/berichtuitwisseling/messages/v3"><%= msg.conversation_uuid %></ConversatieId>
+                <TraceerId xmlns="http://schemas.vecozo.nl/berichtuitwisseling/messages/v3"><%= msg.uuid %></TraceerId>
+            </IndienenBerichtResult>
+        </IndienenBerichtResponse>
+    </s:Body>
+</s:Envelope>

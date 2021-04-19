@@ -1,7 +1,11 @@
 defmodule CommServer.ResponseCreator do
   alias CommServer.Message
 
-  def create(%Message{action: "VerzoekToewijzing"} = message) do
-    "<Bla />"
+  @templates_path Path.expand("./templates", __DIR__)
+
+  def create(%Message{type: "JW315"} = msg) do
+    @templates_path
+    |> Path.join("jw315_response.xml.eex")
+    |> EEx.eval_file(msg: msg)
   end
 end

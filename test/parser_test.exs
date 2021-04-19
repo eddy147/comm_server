@@ -47,8 +47,7 @@ defmodule ParserTest do
                raamcontract: "2",
                referentie_aanbieder: "88efe721359587",
                toewijzing_ingangsdatum: "2021-01-01",
-               verwijzer: %{naam: "Utrecht", type: "01"},
-               toewijzing_nummer: "0000000",
+               verwijzer: %{naam: "Utrecht", type: "01"}
              }
            ]
   end
