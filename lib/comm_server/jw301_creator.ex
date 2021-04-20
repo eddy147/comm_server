@@ -11,7 +11,11 @@ defmodule CommServer.Jw301Creator do
     jw301 = %Message{
       uuid: id,
       type: "JW301",
-      xml: render_xml(msg)
+      xml: render_xml(msg),
+      institution: msg.institution,
+      version_major: msg.version_major,
+      version_minor: msg.version_minor,
+      municipality: msg.municipality
     }
 
     jw301

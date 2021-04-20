@@ -29,18 +29,13 @@ defmodule CommServer.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:cowboy, "~> 2.8"},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
-      {:ecto_sql, "~> 3.0"},
-      {:elixir_xml_to_map, "~> 2.0"},
-      {:iteraptor, "~> 1.13"},
-      {:plug, "~> 1.11"},
-      {:plug_cowboy, "~> 2.4"},
-      {:postgrex, ">= 0.0.0"},
-      {:quinn, "~> 1.1"},
+      {:ecto_sql, "~> 3.6.1"},
+      {:plug, "~> 1.11.1"},
+      {:plug_cowboy, "~> 2.5.0"},
+      {:postgrex, ">= 0.15.8"},
+      {:quinn, "~> 1.1.3"},
       {:sweet_xml, "~> 0.6.6"},
-      {:zstream, "~> 0.5.2"},
-      {:xml_builder, "~> 2.1"}
+      {:zstream, "~> 0.6.0"}
     ]
   end
 end

@@ -15,9 +15,9 @@ defmodule CommServer.Router do
     case Plug.Conn.read_body(conn, opts) do
       {:ok, body, conn} ->
         message = SoapParser.parse(body)
+        MessageHandler.process(message)
         response = message |> ResponseCreator.create()
         send_resp(conn |> put_resp_content_type("text/xml"), 200, response)
-        MessageHandler.process(message)
 
       {:error, term} ->
         send_resp(
